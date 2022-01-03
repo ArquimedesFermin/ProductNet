@@ -12,14 +12,11 @@ namespace ProductServices.Repository.Implements
     public class GenericsClass<T> : IGenericsClass<T> where T : class
     {
         private readonly IUnitOfWork _unitOfWork;
-        public GenericsClass(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+        public GenericsClass(IUnitOfWork unitOfWork) => (_unitOfWork) = (unitOfWork); 
         public async Task<IEnumerable<T>> Get(Expression<Func<T, bool>> expression) => await _unitOfWork.Context.Set<T>().Where(expression).ToListAsync();
-        public async Task<IEnumerable<T>> GetAll() => await _unitOfWork.Context.Set<T>().ToListAsync();
+        public async Task<IEnumerable<T>> Get() => await _unitOfWork.Context.Set<T>().ToListAsync();
         public async Task Add(T entity) => await _unitOfWork.Context.AddAsync(entity);
-        public async Task Remove(T entity)
+        public async Task Delete(T entity)
         {
             T enti = await _unitOfWork.Context.Set<T>().FindAsync(entity);
             if (enti != null) _unitOfWork.Context.Set<T>().Remove(entity);

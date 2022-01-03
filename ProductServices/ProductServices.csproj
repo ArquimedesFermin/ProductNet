@@ -9,10 +9,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ProductServices.Context\ProductServices.Context.csproj" />
+    <ProjectReference Include="..\ProductServices.Repository\ProductServices.Repository.csproj" />
   </ItemGroup>
 
 </Project>
