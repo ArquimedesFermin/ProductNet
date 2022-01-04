@@ -12,12 +12,12 @@ namespace ProductServices.Models
     {
         [Key]
         public int Id { get; set; }
-
-        [ForeignKey("mark")]
-        public int IdMark { get; set; }
-
+ 
         [ForeignKey("productType")]
         public int IdProductType { get; set; }
+
+        [ForeignKey("model")]
+        public int IdModel { get; set; }
         public string Name { get; set; }
         public int Stock { get; set; }
         public string Comments { get; set; }
@@ -25,8 +25,8 @@ namespace ProductServices.Models
 
         //Prop Navegation
         public List<MarkColor> productColors { get; set; }
-        public Marks mark { get; set; }
         public ProductType  productType { get; set; }
+        public Models model { get; set; }
 
     }
 }

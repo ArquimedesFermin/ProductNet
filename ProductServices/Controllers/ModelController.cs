@@ -17,17 +17,18 @@ namespace ProductServices.Controllers
 
         public ModelController(IUnitOfWork unitOfWork, IGenericsClass<Models.Models> genericsClass) => (_unitOfWork, _genericsClass) = (unitOfWork, genericsClass);
 
+        [HttpGet]
         public async Task<Response> Get()
         {
             try
             {
-                var productType = await _genericsClass.Get();
+                var models = await _genericsClass.Get();
 
                 return new Response()
                 {
                     StatusCode = 200,
                     IsOk = true,
-                    Result = productType
+                    Result = models
                 };
             }
             catch (System.Exception ex)
@@ -35,8 +36,8 @@ namespace ProductServices.Controllers
 
                 return new Response()
                 {
-                    StatusCode = 200,
-                    IsOk = true,
+                    StatusCode = 500,
+                    IsOk = false,
                     Result = ex.Message
                 };
             }
@@ -47,21 +48,21 @@ namespace ProductServices.Controllers
         {
             try
             {
-                var productType = await _genericsClass.Get(x => x.Id == id);
+                var model = await _genericsClass.Get(x => x.Id == id);
 
                 return new Response()
                 {
                     StatusCode = 200,
                     IsOk = true,
-                    Result = productType
+                    Result = model
                 };
             }
             catch (System.Exception ex)
             {
                 return new Response()
                 {
-                    StatusCode = 200,
-                    IsOk = true,
+                    StatusCode = 500,
+                    IsOk = false,
                     Result = ex.Message
                 };
             }
@@ -86,8 +87,8 @@ namespace ProductServices.Controllers
 
                 return new Response()
                 {
-                    StatusCode = 200,
-                    IsOk = true,
+                    StatusCode = 500,
+                    IsOk = false,
                     Result = ex.Message
                 };
             }
@@ -111,19 +112,20 @@ namespace ProductServices.Controllers
             {
                 return new Response()
                 {
-                    StatusCode = 200,
-                    IsOk = true,
+                    StatusCode = 500,
+                    IsOk = false,
                     Result = ex.Message
                 };
             }
         }
 
-        [HttpDelete]
-        public async Task<Response> Delete([FromBody] Models.Models models)
+        [HttpDelete("{id}")]
+        public async Task<Response> Delete(int id)
         {
             try
             {
-                await _genericsClass.Delete(models);
+                var model = _unitOfWork.Context.models.Find(id);
+                await _genericsClass.Delete(model);
                 _unitOfWork.Commit();
 
                 return new Response()
@@ -136,8 +138,8 @@ namespace ProductServices.Controllers
             {
                 return new Response()
                 {
-                    StatusCode = 200,
-                    IsOk = true,
+                    StatusCode = 500,
+                    IsOk = false,
                     Result = ex.Message
                 };
             }

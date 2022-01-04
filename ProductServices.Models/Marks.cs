@@ -12,13 +12,7 @@ namespace ProductServices.Models
     {
         [Key]
         public int Id { get; set; }
-
-        [ForeignKey("model")]
-        public int IdModel { get; set; }
         public string Name { get; set; }
-
-        //Prop Navegation
-        public Models model { get; set; }
-
+       
     }
 }

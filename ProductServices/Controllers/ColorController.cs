@@ -23,13 +23,13 @@ namespace ProductServices.Controllers
         {
             try
             {
-                var productType = await _genericsClass.Get();
+                var colors = await _genericsClass.Get();
 
                 return new Response()
                 {
                     StatusCode = 200,
                     IsOk = true,
-                    Result = productType
+                    Result = colors
                 };
             }
             catch (System.Exception ex)
@@ -37,8 +37,8 @@ namespace ProductServices.Controllers
 
                 return new Response()
                 {
-                    StatusCode = 200,
-                    IsOk = true,
+                    StatusCode = 500,
+                    IsOk = false,
                     Result = ex.Message
                 };
             }
@@ -49,21 +49,21 @@ namespace ProductServices.Controllers
         {
             try
             {
-                var productType = await _genericsClass.Get(x => x.Id == id);
+                var color = await _genericsClass.Get(x => x.Id == id);
 
                 return new Response()
                 {
                     StatusCode = 200,
                     IsOk = true,
-                    Result = productType
+                    Result = color
                 };
             }
             catch (System.Exception ex)
             {
                 return new Response()
                 {
-                    StatusCode = 200,
-                    IsOk = true,
+                    StatusCode = 500,
+                    IsOk = false,
                     Result = ex.Message
                 };
             }
@@ -88,8 +88,8 @@ namespace ProductServices.Controllers
 
                 return new Response()
                 {
-                    StatusCode = 200,
-                    IsOk = true,
+                    StatusCode = 500,
+                    IsOk = false,
                     Result = ex.Message
                 };
             }
@@ -113,18 +113,19 @@ namespace ProductServices.Controllers
             {
                 return new Response()
                 {
-                    StatusCode = 200,
-                    IsOk = true,
+                    StatusCode = 500,
+                    IsOk = false,
                     Result = ex.Message
                 };
             }
         }
 
-        [HttpDelete]
-        public async Task<Response> Delete([FromBody] Color color)
+        [HttpDelete("{id}")]
+        public async Task<Response> Delete(int id)
         {
             try
             {
+               var color = await _unitOfWork.Context.colors.FindAsync(id);
                 await _genericsClass.Delete(color);
                 _unitOfWork.Commit();
 
@@ -138,8 +139,8 @@ namespace ProductServices.Controllers
             {
                 return new Response()
                 {
-                    StatusCode = 200,
-                    IsOk = true,
+                    StatusCode = 500,
+                    IsOk = false,
                     Result = ex.Message
                 };
             }

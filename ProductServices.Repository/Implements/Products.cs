@@ -53,11 +53,11 @@ namespace ProductServices.Repository.Implements
             var color = _UnitOfWork.Context.colors.FirstOrDefault(x => x.Name == products.Color);
             var model = _UnitOfWork.Context.models.FirstOrDefault(x => x.Name == products.Model);
             var mark = _UnitOfWork.Context.marks.FirstOrDefault(x => x.Name == products.Marck);
-            var productType = _UnitOfWork.Context.ProductTypes.FirstOrDefault(x => x.Name == products.TypeProduct);
+            var productType = _UnitOfWork.Context.productTypes.FirstOrDefault(x => x.Name == products.TypeProduct);
 
             var product = new Models.Products()
             {
-                IdMark = mark.Id,
+                IdModel = model.Id,
                 Name = products.Name,
                 Stock = products.Stock,
                 Comments = products.Comments,

@@ -18,6 +18,7 @@ namespace ProductServices.Controllers
         [HttpGet]
         public async Task<Response> Get()
         {
+
             var products = await _productsImplements.Get();
 
 
@@ -37,9 +38,26 @@ namespace ProductServices.Controllers
         }
 
         [HttpPost]
-        public async Task Post([FromBody] ProductsDTO products)
+        public async Task<Response> Post([FromBody] ProductsDTO products)
         {
-            await _productsImplements.Add(products);
+            try
+            {
+                await _productsImplements.Add(products);
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 500,
+                    IsOk = false,
+                    Result = ex.Message
+                };
+            }
         }
 
         [HttpPut("{id}")]
@@ -48,7 +66,7 @@ namespace ProductServices.Controllers
             //  await _productsImplements.Update(value);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task Delete(Products products)
         {
             await _productsImplements.Delete(products);
