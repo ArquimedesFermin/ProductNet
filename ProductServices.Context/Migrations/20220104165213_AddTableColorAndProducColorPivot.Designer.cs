@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductServices.Context;
 
 namespace ProductServices.Context.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    partial class ProductContextModelSnapshot : ModelSnapshot
+    [Migration("20220104165213_AddTableColorAndProducColorPivot")]
+    partial class AddTableColorAndProducColorPivot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace ProductServices.Context.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("colors");
+                    b.ToTable("Color");
                 });
 
             modelBuilder.Entity("ProductServices.Models.Marks", b =>
@@ -100,7 +102,7 @@ namespace ProductServices.Context.Migrations
 
                     b.HasIndex("IdProduct");
 
-                    b.ToTable("productsColor");
+                    b.ToTable("ProductColor");
                 });
 
             modelBuilder.Entity("ProductServices.Models.Products", b =>
