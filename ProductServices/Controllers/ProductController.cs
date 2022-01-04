@@ -16,15 +16,24 @@ namespace ProductServices.Controllers
         public ProductController(IProducts productsImplements) => _productsImplements = productsImplements;
 
         [HttpGet]
-        public async Task<IEnumerable<Products>> Get()
+        public async Task<Response> Get()
         {
-            return await _productsImplements.Get();
+            var products = await _productsImplements.Get();
+
+
+            return new Response()
+            {
+                StatusCode = 200,
+                IsOk = true,
+                Result = products
+            };
         }
 
         [HttpGet("{id}")]
         public async Task<IEnumerable<Products>> Get(int id)
         {
-            return await _productsImplements.Get(x => x.Id == id);
+            return new List<Products>();
+            //  return await _productsImplements.Get(x => x.Id == id);
         }
 
         [HttpPost]
@@ -36,7 +45,7 @@ namespace ProductServices.Controllers
         [HttpPut("{id}")]
         public async Task Update([FromBody] Products value)
         {
-            await _productsImplements.Update(value);
+            //  await _productsImplements.Update(value);
         }
 
         [HttpDelete("{id}")]

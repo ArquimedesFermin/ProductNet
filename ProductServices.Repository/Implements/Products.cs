@@ -14,87 +14,81 @@ namespace ProductServices.Repository.Implements
 {
     public class Products : IProducts
     {
-        private readonly IUnitOfWork _context;
-        public Products(IUnitOfWork context) => (_context) = context;
+        private readonly IUnitOfWork _UnitOfWork;
+        public Products(IUnitOfWork UnitOfWork) => (_UnitOfWork) = UnitOfWork;
 
-        public async Task<IEnumerable<Models.Products>> Get()
+        public async Task<IEnumerable<ProductsDTO>> Get()
         {
-            return await _context.Context.products.ToListAsync();
+            //return await _UnitOfWork.Context.products
+            //    .Include(x => x.mark).ThenInclude(x => x.model)
+            //    .Include(x => x.productColors).ThenInclude(x => x.products)
+            //    .Include(x => x.productColors).ThenInclude(x => x.color)
+            //    .Select( x=> new ProductsDTO() {
+            //        Marck =x.mark.Name,
+            //        Model = x.mark.model.Name,
+            //        Name = x.Name,
+            //        Stock = x.Stock,
+            //        Comments = x.Comments,
+            //        Price = x.productColors.Where(x=>x.)
+
+
+            //    });
+            //    .ToListAsync();
+
+            return new List<ProductsDTO>();
+
+          
         }
 
-        public async Task<IEnumerable<Models.Products>> Get(Expression<Func<Models.Products, bool>> expression)
+        public async Task<IEnumerable<ProductsDTO>> Get(Expression<Func<Models.Products, bool>> expression)
         {
-            return await _context.Context.products.Where(expression).ToListAsync();
+            //return await _UnitOfWork.Context.products.Where(expression).ToListAsync();
+
+            return new List<ProductsDTO>();
+
         }
 
         public async Task Add(ProductsDTO products)
         {
-            int IdMarks = 0, IdModel = 0, IdColor = 0;
-            var color = _context.Context.colors.FirstOrDefault(x => x.Name == products.Color);
-            var model = _context.Context.models.FirstOrDefault(x => x.Name == products.Model);
-            var mark = _context.Context.marks.FirstOrDefault(x => x.Name == products.Marck);
-
-            if (color is null)
-            {
-                var colorNew = new Color() { Name = products.Color };
-                _context.Context.colors.Add(colorNew);
-                _context.Commit();
-                IdColor = _context.Context.colors.FirstOrDefault(x => x.Name == products.Color).Id;
-            }
-
-            if (mark is null)
-            {
-                if (model is null)
-                {
-                    var modelNew = new Models.Models() { Name = products.Model };
-                    _context.Context.models.Add(modelNew);
-                    _context.Commit();
-                    IdModel = _context.Context.models.FirstOrDefault(x => x.Name == products.Model).Id;
-                }
-                var marksNew = new Marks() { Name = products.Marck };
-                _context.Context.marks.Add(marksNew);
-                _context.Commit();
-                IdMarks = _context.Context.marks.FirstOrDefault(x => x.Name == products.Marck).Id;
-            }
+            var color = _UnitOfWork.Context.colors.FirstOrDefault(x => x.Name == products.Color);
+            var model = _UnitOfWork.Context.models.FirstOrDefault(x => x.Name == products.Model);
+            var mark = _UnitOfWork.Context.marks.FirstOrDefault(x => x.Name == products.Marck);
+            var productType = _UnitOfWork.Context.ProductTypes.FirstOrDefault(x => x.Name == products.TypeProduct);
 
             var product = new Models.Products()
             {
-                IdMark = IdMarks,
+                IdMark = mark.Id,
                 Name = products.Name,
                 Stock = products.Stock,
                 Comments = products.Comments,
-                DateManufacture = products.DateManufacture
+                DateManufacture = products.DateManufacture,
+                IdProductType = productType.Id
             };
 
-            await _context.Context.AddAsync(product);
-            _context.Commit();
+            await _UnitOfWork.Context.AddAsync(product);
+            _UnitOfWork.Commit();
 
-            var ProductColor = new ProductColor()
+            var ProductColor = new MarkColor()
             {
-                IdProduct = product.Id,
-                IdColor = IdColor,
+                IdMarks = mark.Id,
+                IdColor = color.Id,
                 Price = products.Price
             };
 
-            _context.Context.productsColor.Add(ProductColor);
-            _context.Commit();
+            _UnitOfWork.Context.marksColor.Add(ProductColor);
+            _UnitOfWork.Commit();
         }
-
-
-
-
-
 
         public async Task Delete(Models.Products product)
         {
-            _context.Context.Remove(product);
-            _context.Commit();
+            _UnitOfWork.Context.Remove(product);
+            _UnitOfWork.Commit();
             await Task.CompletedTask;
         }
-        public async Task Update(Models.Products product)
+        public async Task Update(ProductsDTO product)
         {
-            _context.Context.Entry(product).State = EntityState.Modified;
-            _context.Commit();
+            _UnitOfWork.Context.Entry(product).State = EntityState.Modified;
+            _UnitOfWork.Commit();
             await Task.CompletedTask;
         }
     }

@@ -8,17 +8,16 @@ using System.Threading.Tasks;
 
 namespace ProductServices.Models
 {
-    public class Marks
+    public class MarkColor
     {
         [Key]
         public int Id { get; set; }
-
-        [ForeignKey("model")]
-        public int IdModel { get; set; }
-        public string Name { get; set; }
-
-        //Prop Navegation
-        public Models model { get; set; }
-
+        [ForeignKey("marks")]
+        public int IdMarks { get; set; }
+        [ForeignKey("color")]
+        public int IdColor { get; set; }
+        public decimal Price { get; set; }
+        public Marks marks { get; set; }
+        public Color color { get; set; }
     }
 }

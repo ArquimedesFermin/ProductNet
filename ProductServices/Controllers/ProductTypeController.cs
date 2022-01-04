@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProductServices.DTO;
+using ProductServices.Models;
 using ProductServices.Repository;
 using ProductServices.Repository.Interfaces;
 using System.Collections.Generic;
@@ -10,13 +11,14 @@ namespace ProductServices.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ModelController : ControllerBase
+    public class ProductTypeController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IGenericsClass<Models.Models> _genericsClass;
+        private readonly IGenericsClass<ProductType> _genericsClass;
 
-        public ModelController(IUnitOfWork unitOfWork, IGenericsClass<Models.Models> genericsClass) => (_unitOfWork, _genericsClass) = (unitOfWork, genericsClass);
+        public ProductTypeController(IUnitOfWork unitOfWork, IGenericsClass<ProductType> genericsClass) => (_unitOfWork, _genericsClass) = (unitOfWork, genericsClass);
 
+        [HttpGet]
         public async Task<Response> Get()
         {
             try
@@ -68,11 +70,11 @@ namespace ProductServices.Controllers
         }
 
         [HttpPost]
-        public async Task<Response> Add([FromBody] Models.Models models)
+        public async Task<Response> Add([FromBody] ProductType productType)
         {
             try
             {
-                await _genericsClass.Add(models);
+                await _genericsClass.Add(productType);
                 _unitOfWork.Commit();
 
                 return new Response()
@@ -94,11 +96,11 @@ namespace ProductServices.Controllers
         }
 
         [HttpPut]
-        public async Task<Response> Update([FromBody] Models.Models models)
+        public async Task<Response> Update([FromBody] ProductType productType)
         {
             try
             {
-                await _genericsClass.Update(models);
+                await _genericsClass.Update(productType);
                 _unitOfWork.Commit();
 
                 return new Response()
@@ -119,11 +121,11 @@ namespace ProductServices.Controllers
         }
 
         [HttpDelete]
-        public async Task<Response> Delete([FromBody] Models.Models models)
+        public async Task<Response> Delete([FromBody] ProductType productType)
         {
             try
             {
-                await _genericsClass.Delete(models);
+                await _genericsClass.Delete(productType);
                 _unitOfWork.Commit();
 
                 return new Response()
@@ -142,5 +144,6 @@ namespace ProductServices.Controllers
                 };
             }
         }
+
     }
 }

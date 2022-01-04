@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProductServices.DTO;
 using ProductServices.Models;
 using ProductServices.Repository;
 using ProductServices.Repository.Interfaces;
@@ -18,30 +19,130 @@ namespace ProductServices.Controllers
         public ColorController(IUnitOfWork unitOfWork, IGenericsClass<Color> genericsClass) => (_unitOfWork, _genericsClass) = (unitOfWork, genericsClass);
 
         [HttpGet]
-        public async Task<IEnumerable<Color>> Get() => await _genericsClass.Get();
+        public async Task<Response> Get()
+        {
+            try
+            {
+                var productType = await _genericsClass.Get();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = productType
+                };
+            }
+            catch (System.Exception ex)
+            {
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = ex.Message
+                };
+            }
+        }
 
         [HttpGet("{id}")]
-        public async Task<IEnumerable<Color>> GetbyId(int id) => await _genericsClass.Get(x => x.Id == id);
+        public async Task<Response> GetbyId(int id)
+        {
+            try
+            {
+                var productType = await _genericsClass.Get(x => x.Id == id);
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = productType
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = ex.Message
+                };
+            }
+        }
 
         [HttpPost]
-        public void Add([FromBody] Color mark)
+        public async Task<Response> Add([FromBody] Color color)
         {
-            _genericsClass.Add(mark);
-            _unitOfWork.Commit();
+            try
+            {
+                await _genericsClass.Add(color);
+                _unitOfWork.Commit();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                };
+            }
+            catch (System.Exception ex)
+            {
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = ex.Message
+                };
+            }
         }
 
         [HttpPut]
-        public async Task Update([FromBody] Color mark)
+        public async Task<Response> Update([FromBody] Color color)
         {
-            await _genericsClass.Update(mark);
-            _unitOfWork.Commit();
+            try
+            {
+                await _genericsClass.Update(color);
+                _unitOfWork.Commit();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = ex.Message
+                };
+            }
         }
 
         [HttpDelete]
-        public async Task Delete([FromBody] Color mark)
+        public async Task<Response> Delete([FromBody] Color color)
         {
-            await _genericsClass.Delete(mark);
-            _unitOfWork.Commit();
+            try
+            {
+                await _genericsClass.Delete(color);
+                _unitOfWork.Commit();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = ex.Message
+                };
+            }
         }
     }
 }

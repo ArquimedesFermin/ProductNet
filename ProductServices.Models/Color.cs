@@ -13,7 +13,7 @@ namespace ProductServices.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string HexColor { get; set; }
-        public List<ProductColor> productColors { get; set; }
+        public List<MarkColor> productColors { get; set; }
 
     }
 }

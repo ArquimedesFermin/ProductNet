@@ -11,10 +11,10 @@ namespace ProductServices.Repository.Interfaces
 {
     public interface IProducts
     {
-        Task<IEnumerable<Products>> Get();
-        Task<IEnumerable<Products>> Get(Expression<Func<Products, bool>> expression);
+        Task<IEnumerable<ProductsDTO>> Get();
+        Task<IEnumerable<ProductsDTO>> Get(Expression<Func<Products, bool>> expression);
         Task Add(ProductsDTO product);
-        Task Update(Products product);
+        Task Update(ProductsDTO product);
         Task Delete(Products product);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProductServices.DTO;
 using ProductServices.Models;
 using ProductServices.Repository;
 using ProductServices.Repository.Interfaces;
@@ -17,31 +18,130 @@ namespace ProductServices.Controllers
 
         public MarkController(IUnitOfWork unitOfWork, IGenericsClass<Marks> genericsClass) => (_unitOfWork, _genericsClass) = (unitOfWork, genericsClass);
 
-        [HttpGet]
-        public async Task<IEnumerable<Marks>> Get() => await _genericsClass.Get();
+        public async Task<Response> Get()
+        {
+            try
+            {
+                var productType = await _genericsClass.Get();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = productType
+                };
+            }
+            catch (System.Exception ex)
+            {
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = ex.Message
+                };
+            }
+        }
 
         [HttpGet("{id}")]
-        public async Task<IEnumerable<Marks>> GetbyId(int id) => await _genericsClass.Get(x => x.Id == id);
+        public async Task<Response> GetbyId(int id)
+        {
+            try
+            {
+                var productType = await _genericsClass.Get(x => x.Id == id);
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = productType
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = ex.Message
+                };
+            }
+        }
 
         [HttpPost]
-        public void Add([FromBody] Marks mark)
+        public async Task<Response> Add([FromBody] Marks marks)
         {
-            _genericsClass.Add(mark);
-            _unitOfWork.Commit();
+            try
+            {
+                await _genericsClass.Add(marks);
+                _unitOfWork.Commit();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                };
+            }
+            catch (System.Exception ex)
+            {
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = ex.Message
+                };
+            }
         }
 
         [HttpPut]
-        public async Task Update([FromBody] Marks mark)
+        public async Task<Response> Update([FromBody] Marks marks)
         {
-            await _genericsClass.Update(mark);
-            _unitOfWork.Commit();
+            try
+            {
+                await _genericsClass.Update(marks);
+                _unitOfWork.Commit();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = ex.Message
+                };
+            }
         }
 
         [HttpDelete]
-        public async Task Delete([FromBody] Marks mark)
+        public async Task<Response> Delete([FromBody] Marks marks)
         {
-            await _genericsClass.Delete(mark);
-            _unitOfWork.Commit();
+            try
+            {
+                await _genericsClass.Delete(marks);
+                _unitOfWork.Commit();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = ex.Message
+                };
+            }
         }
     }
 }

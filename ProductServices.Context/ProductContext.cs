@@ -19,6 +19,7 @@ namespace ProductServices.Context
         public DbSet<Models.Models> models { get; set; }
         public DbSet<Products> products { get; set; }
         public DbSet<Color> colors { get; set; }
-        public DbSet<ProductColor> productsColor { get; set; }
+        public DbSet<MarkColor> marksColor { get; set; }
+        public DbSet<ProductType> ProductTypes { get; set; }
     }
 }

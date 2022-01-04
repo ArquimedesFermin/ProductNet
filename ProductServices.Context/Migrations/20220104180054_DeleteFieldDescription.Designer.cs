@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductServices.Context;
 
 namespace ProductServices.Context.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    partial class ProductContextModelSnapshot : ModelSnapshot
+    [Migration("20220104180054_DeleteFieldDescription")]
+    partial class DeleteFieldDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,36 +37,6 @@ namespace ProductServices.Context.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("colors");
-                });
-
-            modelBuilder.Entity("ProductServices.Models.MarkColor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("IdColor")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdMarks")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("ProductsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdColor");
-
-                    b.HasIndex("IdMarks");
-
-                    b.HasIndex("ProductsId");
-
-                    b.ToTable("marksColor");
                 });
 
             modelBuilder.Entity("ProductServices.Models.Marks", b =>
@@ -102,19 +74,29 @@ namespace ProductServices.Context.Migrations
                     b.ToTable("models");
                 });
 
-            modelBuilder.Entity("ProductServices.Models.ProductType", b =>
+            modelBuilder.Entity("ProductServices.Models.ProductColor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IdColor")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdProduct")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductTypes");
+                    b.HasIndex("IdColor");
+
+                    b.HasIndex("IdProduct");
+
+                    b.ToTable("productsColor");
                 });
 
             modelBuilder.Entity("ProductServices.Models.Products", b =>
@@ -133,9 +115,6 @@ namespace ProductServices.Context.Migrations
                     b.Property<int>("IdMark")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdProductType")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -146,32 +125,7 @@ namespace ProductServices.Context.Migrations
 
                     b.HasIndex("IdMark");
 
-                    b.HasIndex("IdProductType");
-
                     b.ToTable("products");
-                });
-
-            modelBuilder.Entity("ProductServices.Models.MarkColor", b =>
-                {
-                    b.HasOne("ProductServices.Models.Color", "color")
-                        .WithMany("productColors")
-                        .HasForeignKey("IdColor")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProductServices.Models.Marks", "marks")
-                        .WithMany()
-                        .HasForeignKey("IdMarks")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProductServices.Models.Products", null)
-                        .WithMany("productColors")
-                        .HasForeignKey("ProductsId");
-
-                    b.Navigation("color");
-
-                    b.Navigation("marks");
                 });
 
             modelBuilder.Entity("ProductServices.Models.Marks", b =>
@@ -185,6 +139,25 @@ namespace ProductServices.Context.Migrations
                     b.Navigation("model");
                 });
 
+            modelBuilder.Entity("ProductServices.Models.ProductColor", b =>
+                {
+                    b.HasOne("ProductServices.Models.Color", "color")
+                        .WithMany("productColors")
+                        .HasForeignKey("IdColor")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProductServices.Models.Products", "products")
+                        .WithMany("productColors")
+                        .HasForeignKey("IdProduct")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("color");
+
+                    b.Navigation("products");
+                });
+
             modelBuilder.Entity("ProductServices.Models.Products", b =>
                 {
                     b.HasOne("ProductServices.Models.Marks", "mark")
@@ -193,15 +166,7 @@ namespace ProductServices.Context.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProductServices.Models.ProductType", "productType")
-                        .WithMany()
-                        .HasForeignKey("IdProductType")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("mark");
-
-                    b.Navigation("productType");
                 });
 
             modelBuilder.Entity("ProductServices.Models.Color", b =>

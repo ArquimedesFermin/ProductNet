@@ -15,6 +15,7 @@ namespace ProductServices.DTO
         public string Comments { get; set; }
         public decimal Price { get; set; }
         public string Color { get; set; }
+        public string TypeProduct { get; set; }
         public DateTime DateManufacture { get; set; } 
     }
 }

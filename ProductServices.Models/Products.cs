@@ -15,14 +15,18 @@ namespace ProductServices.Models
 
         [ForeignKey("mark")]
         public int IdMark { get; set; }
+
+        [ForeignKey("productType")]
+        public int IdProductType { get; set; }
         public string Name { get; set; }
         public int Stock { get; set; }
         public string Comments { get; set; }
         public DateTime DateManufacture { get; set; }
 
         //Prop Navegation
+        public List<MarkColor> productColors { get; set; }
         public Marks mark { get; set; }
-        public List<ProductColor> productColors { get; set; }
+        public ProductType  productType { get; set; }
 
     }
 }
