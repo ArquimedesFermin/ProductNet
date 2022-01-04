@@ -16,66 +16,86 @@ namespace ProductServices.Repository.Implements
     {
         private readonly IUnitOfWork _UnitOfWork;
         public Products(IUnitOfWork UnitOfWork) => (_UnitOfWork) = UnitOfWork;
-
-        public async Task<IEnumerable<ProductsDTO>> Get()
+        public async Task<List<ProductsDTO>> Get()
         {
-            //return await _UnitOfWork.Context.products
-            //    .Include(x => x.mark).ThenInclude(x => x.model)
-            //    .Include(x => x.productColors).ThenInclude(x => x.products)
-            //    .Include(x => x.productColors).ThenInclude(x => x.color)
-            //    .Select( x=> new ProductsDTO() {
-            //        Marck =x.mark.Name,
-            //        Model = x.mark.model.Name,
-            //        Name = x.Name,
-            //        Stock = x.Stock,
-            //        Comments = x.Comments,
-            //        Price = x.productColors.Where(x=>x.)
-
-
-            //    });
-            //    .ToListAsync();
-
-            return new List<ProductsDTO>();
-
-          
+            return await _UnitOfWork.Context.products
+                .Include(x => x.model).ThenInclude(x => x.Mark).ThenInclude(x => x.ProductType)
+                .Include(x => x.model.modelColorPrice).ThenInclude(x => x.model)
+                .Include(x => x.model.modelColorPrice).ThenInclude(x => x.color)
+                .Include(x => x.productModelColorPrices)
+                .Select(x => new ProductsDTO()
+                {
+                    Marks = x.model.Mark.Name,
+                    Model = x.model.Name,
+                    Name = x.Name,
+                    Stock = x.Stock,
+                    descrition = x.Description,
+                    TypeProduct = x.productType.Name,
+                    DateManufacture = x.DateManufacture,
+                    Price = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.Price,
+                    Color = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.color.Name
+                }).ToListAsync();
         }
 
         public async Task<IEnumerable<ProductsDTO>> Get(Expression<Func<Models.Products, bool>> expression)
         {
-            //return await _UnitOfWork.Context.products.Where(expression).ToListAsync();
-
-            return new List<ProductsDTO>();
-
+            return await _UnitOfWork.Context.products
+                         .Include(x => x.model).ThenInclude(x => x.Mark).ThenInclude(x => x.ProductType)
+                         .Include(x => x.model.modelColorPrice).ThenInclude(x => x.model)
+                         .Include(x => x.model.modelColorPrice).ThenInclude(x => x.color)
+                         .Include(x => x.productModelColorPrices)
+                         .Where(expression)
+                         .Select(x => new ProductsDTO()
+                         {
+                             Marks = x.model.Mark.Name,
+                             Model = x.model.Name,
+                             Name = x.Name,
+                             Stock = x.Stock,
+                             descrition = x.Description,
+                             TypeProduct = x.productType.Name,
+                             DateManufacture = x.DateManufacture,
+                             Price = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.Price,
+                             Color = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.color.Name
+                         }).ToListAsync();
         }
 
         public async Task Add(ProductsDTO products)
         {
+            var productModelColorPrice = new ProductModelColorPrice();
             var color = _UnitOfWork.Context.colors.FirstOrDefault(x => x.Name == products.Color);
             var model = _UnitOfWork.Context.models.FirstOrDefault(x => x.Name == products.Model);
-            var mark = _UnitOfWork.Context.marks.FirstOrDefault(x => x.Name == products.Marck);
             var productType = _UnitOfWork.Context.productTypes.FirstOrDefault(x => x.Name == products.TypeProduct);
+            var modelColorPrice = _UnitOfWork.Context.modelColorPrice.FirstOrDefault(x => x.IdModel == model.Id && x.IdColor == color.Id);
 
             var product = new Models.Products()
             {
                 IdModel = model.Id,
                 Name = products.Name,
                 Stock = products.Stock,
-                Comments = products.Comments,
+                Description = products.descrition,
                 DateManufacture = products.DateManufacture,
-                IdProductType = productType.Id
+                IdProductType = productType.Id,
+
             };
 
             await _UnitOfWork.Context.AddAsync(product);
             _UnitOfWork.Commit();
+            productModelColorPrice.IdProducts = product.Id;
 
-            var ProductColor = new MarkColor()
+            if (modelColorPrice is null)
             {
-                IdMarks = mark.Id,
-                IdColor = color.Id,
-                Price = products.Price
-            };
+                var ModelColorPrice = new ModelColorPrice()
+                {
+                    IdModel = model.Id,
+                    IdColor = color.Id,
+                    Price = products.Price,
+                };
+                _UnitOfWork.Context.modelColorPrice.Add(ModelColorPrice);
+                _UnitOfWork.Commit();
+                productModelColorPrice.IdModelColorPrice = ModelColorPrice.Id;
+            }
 
-            _UnitOfWork.Context.marksColor.Add(ProductColor);
+            _UnitOfWork.Context.productModelColorPrice.Add(productModelColorPrice);
             _UnitOfWork.Commit();
         }
 

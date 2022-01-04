@@ -19,15 +19,27 @@ namespace ProductServices.Controllers
         public async Task<Response> Get()
         {
 
-            var products = await _productsImplements.Get();
 
-
-            return new Response()
+            try
             {
-                StatusCode = 200,
-                IsOk = true,
-                Result = products
-            };
+                var products = await _productsImplements.Get();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = products
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 500,
+                    IsOk = false,
+                    Result = ex.Message
+                };
+            }
         }
 
         [HttpGet("{id}")]

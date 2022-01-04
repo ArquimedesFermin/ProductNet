@@ -8,11 +8,11 @@ namespace ProductServices.DTO
 {
     public class ProductsDTO
     {
-        public string Marck { get; set; }
+        public string Marks { get; set; }
         public string Model { get; set; }
         public string Name { get; set; }
         public int Stock { get; set; }
-        public string Comments { get; set; }
+        public string descrition { get; set; }
         public decimal Price { get; set; }
         public string Color { get; set; }
         public string TypeProduct { get; set; }

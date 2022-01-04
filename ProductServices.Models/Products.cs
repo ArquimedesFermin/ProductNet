@@ -20,13 +20,13 @@ namespace ProductServices.Models
         public int IdModel { get; set; }
         public string Name { get; set; }
         public int Stock { get; set; }
-        public string Comments { get; set; }
+        public string Description { get; set; }
         public DateTime DateManufacture { get; set; }
 
         //Prop Navegation
-        public List<MarkColor> productColors { get; set; }
         public ProductType  productType { get; set; }
         public Models model { get; set; }
+        public  List<ProductModelColorPrice> productModelColorPrices { get; set; }
 
     }
 }

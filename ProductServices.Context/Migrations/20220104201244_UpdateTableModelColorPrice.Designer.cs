@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductServices.Context;
 
 namespace ProductServices.Context.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    partial class ProductContextModelSnapshot : ModelSnapshot
+    [Migration("20220104201244_UpdateTableModelColorPrice")]
+    partial class UpdateTableModelColorPrice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,15 +46,10 @@ namespace ProductServices.Context.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("IdProductType")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IdProductType");
 
                     b.ToTable("marks");
                 });
@@ -73,13 +70,18 @@ namespace ProductServices.Context.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("ProductsId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IdColor");
 
                     b.HasIndex("IdModel");
 
-                    b.ToTable("modelColorPrice");
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("marksColor");
                 });
 
             modelBuilder.Entity("ProductServices.Models.Models", b =>
@@ -100,28 +102,6 @@ namespace ProductServices.Context.Migrations
                     b.HasIndex("IdMark");
 
                     b.ToTable("models");
-                });
-
-            modelBuilder.Entity("ProductServices.Models.ProductModelColorPrice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("IdModelColorPrice")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdProducts")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdModelColorPrice");
-
-                    b.HasIndex("IdProducts");
-
-                    b.ToTable("productModelColorPrice");
                 });
 
             modelBuilder.Entity("ProductServices.Models.ProductType", b =>
@@ -146,11 +126,11 @@ namespace ProductServices.Context.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("DateManufacture")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("IdModel")
                         .HasColumnType("int");
@@ -173,17 +153,6 @@ namespace ProductServices.Context.Migrations
                     b.ToTable("products");
                 });
 
-            modelBuilder.Entity("ProductServices.Models.Marks", b =>
-                {
-                    b.HasOne("ProductServices.Models.ProductType", "ProductType")
-                        .WithMany()
-                        .HasForeignKey("IdProductType")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductType");
-                });
-
             modelBuilder.Entity("ProductServices.Models.ModelColorPrice", b =>
                 {
                     b.HasOne("ProductServices.Models.Color", "color")
@@ -193,10 +162,14 @@ namespace ProductServices.Context.Migrations
                         .IsRequired();
 
                     b.HasOne("ProductServices.Models.Models", "model")
-                        .WithMany("modelColorPrice")
+                        .WithMany()
                         .HasForeignKey("IdModel")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ProductServices.Models.Products", null)
+                        .WithMany("productColors")
+                        .HasForeignKey("ProductsId");
 
                     b.Navigation("color");
 
@@ -212,25 +185,6 @@ namespace ProductServices.Context.Migrations
                         .IsRequired();
 
                     b.Navigation("Mark");
-                });
-
-            modelBuilder.Entity("ProductServices.Models.ProductModelColorPrice", b =>
-                {
-                    b.HasOne("ProductServices.Models.ModelColorPrice", "ModelColorPrice")
-                        .WithMany()
-                        .HasForeignKey("IdModelColorPrice")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProductServices.Models.Products", "Products")
-                        .WithMany()
-                        .HasForeignKey("IdProducts")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ModelColorPrice");
-
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("ProductServices.Models.Products", b =>
@@ -257,9 +211,9 @@ namespace ProductServices.Context.Migrations
                     b.Navigation("productColors");
                 });
 
-            modelBuilder.Entity("ProductServices.Models.Models", b =>
+            modelBuilder.Entity("ProductServices.Models.Products", b =>
                 {
-                    b.Navigation("modelColorPrice");
+                    b.Navigation("productColors");
                 });
 #pragma warning restore 612, 618
         }

@@ -8,16 +8,18 @@ using System.Threading.Tasks;
 
 namespace ProductServices.Models
 {
-    public class MarkColor
+    public class ModelColorPrice
     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey("marks")]
-        public int IdMarks { get; set; }
+        [ForeignKey("model")]
+        public int IdModel { get; set; }
         [ForeignKey("color")]
         public int IdColor { get; set; }
         public decimal Price { get; set; }
-        public Marks marks { get; set; }
+        public Models model { get; set; }
         public Color color { get; set; }
+        public List<ProductModelColorPrice> productModelColorPrices { get; set; }
+
     }
 }

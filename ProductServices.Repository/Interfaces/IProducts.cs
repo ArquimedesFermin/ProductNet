@@ -11,8 +11,8 @@ namespace ProductServices.Repository.Interfaces
 {
     public interface IProducts
     {
-        Task<IEnumerable<ProductsDTO>> Get();
-        Task<IEnumerable<ProductsDTO>> Get(Expression<Func<Products, bool>> expression);
+        Task<List<ProductsDTO>> Get();
+        Task<IEnumerable<ProductsDTO>> Get(Expression<Func<Models.Products, bool>> expression);
         Task Add(ProductsDTO product);
         Task Update(ProductsDTO product);
         Task Delete(Products product);

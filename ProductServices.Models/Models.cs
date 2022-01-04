@@ -17,5 +17,7 @@ namespace ProductServices.Models
         public int IdMark { get; set; }
         public string Name { get; set; }
         public Marks Mark { get; set; }
+        public List<ModelColorPrice> modelColorPrice { get; set; }
+
     }
 }
