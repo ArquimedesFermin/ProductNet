@@ -35,7 +35,7 @@ namespace ProductServices
             services.AddControllers();
 
             services.AddDbContext<ProductContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Connection")));
-        
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProductServices", Version = "v1", });
@@ -45,6 +45,10 @@ namespace ProductServices
             services.AddScoped(typeof(IGenericsClass<>), typeof(GenericsClass<>));
             services.AddTransient<IProducts, Products>();
 
+            services.AddCors(opt => opt.AddPolicy("CorsR", rule =>
+            {
+                rule.AllowAnyHeader().AllowAnyMethod().WithOrigins("*");
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +64,7 @@ namespace ProductServices
                 }
                 );
             }
+            app.UseCors("CorsR");
 
             app.UseHttpsRedirection();
 

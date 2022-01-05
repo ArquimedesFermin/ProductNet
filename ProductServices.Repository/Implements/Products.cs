@@ -29,9 +29,8 @@ namespace ProductServices.Repository.Implements
                     Model = x.model.Name,
                     Name = x.Name,
                     Stock = x.Stock,
-                    descrition = x.Description,
+                    Description = x.Description,
                     TypeProduct = x.productType.Name,
-                    DateManufacture = x.DateManufacture,
                     Price = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.Price,
                     Color = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.color.Name
                 }).ToListAsync();
@@ -51,9 +50,8 @@ namespace ProductServices.Repository.Implements
                              Model = x.model.Name,
                              Name = x.Name,
                              Stock = x.Stock,
-                             descrition = x.Description,
+                             Description = x.Description,
                              TypeProduct = x.productType.Name,
-                             DateManufacture = x.DateManufacture,
                              Price = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.Price,
                              Color = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.color.Name
                          }).ToListAsync();
@@ -62,18 +60,20 @@ namespace ProductServices.Repository.Implements
         public async Task Add(ProductsDTO products)
         {
             var productModelColorPrice = new ProductModelColorPrice();
+            var ModelColorPrice = new ModelColorPrice();
+            var product = new Models.Products();
+
             var color = _UnitOfWork.Context.colors.FirstOrDefault(x => x.Name == products.Color);
             var model = _UnitOfWork.Context.models.FirstOrDefault(x => x.Name == products.Model);
             var productType = _UnitOfWork.Context.productTypes.FirstOrDefault(x => x.Name == products.TypeProduct);
             var modelColorPrice = _UnitOfWork.Context.modelColorPrice.FirstOrDefault(x => x.IdModel == model.Id && x.IdColor == color.Id);
 
-            var product = new Models.Products()
+            product = new Models.Products()
             {
                 IdModel = model.Id,
                 Name = products.Name,
                 Stock = products.Stock,
-                Description = products.descrition,
-                DateManufacture = products.DateManufacture,
+                Description = products.Description,
                 IdProductType = productType.Id,
 
             };
@@ -84,7 +84,7 @@ namespace ProductServices.Repository.Implements
 
             if (modelColorPrice is null)
             {
-                var ModelColorPrice = new ModelColorPrice()
+                ModelColorPrice = new ModelColorPrice()
                 {
                     IdModel = model.Id,
                     IdColor = color.Id,
@@ -92,8 +92,8 @@ namespace ProductServices.Repository.Implements
                 };
                 _UnitOfWork.Context.modelColorPrice.Add(ModelColorPrice);
                 _UnitOfWork.Commit();
-                productModelColorPrice.IdModelColorPrice = ModelColorPrice.Id;
             }
+            productModelColorPrice.IdModelColorPrice = ModelColorPrice.Id == 0 ? modelColorPrice.Id : ModelColorPrice.Id;
 
             _UnitOfWork.Context.productModelColorPrice.Add(productModelColorPrice);
             _UnitOfWork.Commit();
