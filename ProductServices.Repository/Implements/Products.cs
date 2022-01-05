@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProductServices.Context;
 using ProductServices.DTO;
+using ProductServices.DTO.Product;
 using ProductServices.Models;
 using ProductServices.Repository.Interfaces;
 using System;
@@ -16,23 +17,24 @@ namespace ProductServices.Repository.Implements
     {
         private readonly IUnitOfWork _UnitOfWork;
         public Products(IUnitOfWork UnitOfWork) => (_UnitOfWork) = UnitOfWork;
-        public async Task<List<ProductsDTO>> Get()
+        public async Task<List<ProductsDTO>> Get(Pagination pagination)
         {
             return await _UnitOfWork.Context.products
                 .Include(x => x.model).ThenInclude(x => x.Mark).ThenInclude(x => x.ProductType)
                 .Include(x => x.model.modelColorPrice).ThenInclude(x => x.model)
                 .Include(x => x.model.modelColorPrice).ThenInclude(x => x.color)
                 .Include(x => x.productModelColorPrices)
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
                 .Select(x => new ProductsDTO()
                 {
+                    Id = x.Id,
                     Marks = x.model.Mark.Name,
                     Model = x.model.Name,
                     Name = x.Name,
-                    Stock = x.Stock,
                     Description = x.Description,
                     TypeProduct = x.productType.Name,
                     Price = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.Price,
-                    Color = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.color.Name
                 }).ToListAsync();
         }
 
@@ -46,14 +48,13 @@ namespace ProductServices.Repository.Implements
                          .Where(expression)
                          .Select(x => new ProductsDTO()
                          {
+                             Id = x.Id,
                              Marks = x.model.Mark.Name,
                              Model = x.model.Name,
                              Name = x.Name,
-                             Stock = x.Stock,
                              Description = x.Description,
                              TypeProduct = x.productType.Name,
                              Price = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.Price,
-                             Color = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.color.Name
                          }).ToListAsync();
         }
 
@@ -72,7 +73,6 @@ namespace ProductServices.Repository.Implements
             {
                 IdModel = model.Id,
                 Name = products.Name,
-                Stock = products.Stock,
                 Description = products.Description,
                 IdProductType = productType.Id,
 
@@ -82,17 +82,26 @@ namespace ProductServices.Repository.Implements
             _UnitOfWork.Commit();
             productModelColorPrice.IdProducts = product.Id;
 
+            ModelColorPrice = new ModelColorPrice()
+            {
+                IdModel = model.Id,
+                IdColor = color.Id,
+                Price = products.Price,
+                Stock = (modelColorPrice is null) ? products.Stock : modelColorPrice.Stock + products.Stock,
+            };
+
             if (modelColorPrice is null)
             {
-                ModelColorPrice = new ModelColorPrice()
-                {
-                    IdModel = model.Id,
-                    IdColor = color.Id,
-                    Price = products.Price,
-                };
                 _UnitOfWork.Context.modelColorPrice.Add(ModelColorPrice);
                 _UnitOfWork.Commit();
             }
+            else
+            {
+                modelColorPrice.Stock = (modelColorPrice is null) ? products.Stock : modelColorPrice.Stock + products.Stock;
+                _UnitOfWork.Context.Entry(modelColorPrice).State = EntityState.Modified;
+                _UnitOfWork.Commit();
+            }
+
             productModelColorPrice.IdModelColorPrice = ModelColorPrice.Id == 0 ? modelColorPrice.Id : ModelColorPrice.Id;
 
             _UnitOfWork.Context.productModelColorPrice.Add(productModelColorPrice);
@@ -110,6 +119,11 @@ namespace ProductServices.Repository.Implements
             _UnitOfWork.Context.Entry(product).State = EntityState.Modified;
             _UnitOfWork.Commit();
             await Task.CompletedTask;
+        }
+
+        public Task<DetailsPriceDTO> GetPriceByColor(string color)
+        {
+            throw new NotImplementedException();
         }
     }
 }

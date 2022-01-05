@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductServices.DTO;
+using ProductServices.DTO.Product;
 using ProductServices.Models;
 using ProductServices.Repository.Interfaces;
 using System.Collections.Generic;
@@ -16,13 +17,11 @@ namespace ProductServices.Controllers
         public ProductController(IProducts productsImplements) => _productsImplements = productsImplements;
 
         [HttpGet]
-        public async Task<Response> Get()
+        public async Task<Response> Get([FromQuery]Pagination pagination)
         {
-
-
             try
             {
-                var products = await _productsImplements.Get();
+                var products = await _productsImplements.Get(pagination);
 
                 return new Response()
                 {

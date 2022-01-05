@@ -17,6 +17,7 @@ namespace ProductServices.Models
         [ForeignKey("color")]
         public int IdColor { get; set; }
         public decimal Price { get; set; }
+        public int Stock { get; set; }
         public Models model { get; set; }
         public Color color { get; set; }
         public List<ProductModelColorPrice> productModelColorPrices { get; set; }

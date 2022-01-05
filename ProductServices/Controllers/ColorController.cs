@@ -19,11 +19,11 @@ namespace ProductServices.Controllers
         public ColorController(IUnitOfWork unitOfWork, IGenericsClass<Color> genericsClass) => (_unitOfWork, _genericsClass) = (unitOfWork, genericsClass);
 
         [HttpGet]
-        public async Task<Response> Get()
+        public async Task<Response> Get([FromQuery] Pagination pagination)
         {
             try
             {
-                var colors = await _genericsClass.Get();
+                var colors = await _genericsClass.Get(pagination);
 
                 return new Response()
                 {
@@ -44,12 +44,12 @@ namespace ProductServices.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<Response> GetbyId(int id)
+        [HttpGet("{name}")]
+        public async Task<Response> GetbyId(string name,[FromQuery] Pagination pagination)
         {
             try
             {
-                var color = await _genericsClass.Get(x => x.Id == id);
+                var color = await _genericsClass.Get(x => x.Name == name, pagination);
 
                 return new Response()
                 {
@@ -125,7 +125,7 @@ namespace ProductServices.Controllers
         {
             try
             {
-               var color = await _unitOfWork.Context.colors.FindAsync(id);
+                var color = await _unitOfWork.Context.colors.FindAsync(id);
                 await _genericsClass.Delete(color);
                 _unitOfWork.Commit();
 

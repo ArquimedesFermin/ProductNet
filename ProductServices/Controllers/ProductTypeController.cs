@@ -19,11 +19,11 @@ namespace ProductServices.Controllers
         public ProductTypeController(IUnitOfWork unitOfWork, IGenericsClass<ProductType> genericsClass) => (_unitOfWork, _genericsClass) = (unitOfWork, genericsClass);
 
         [HttpGet]
-        public async Task<Response> Get()
+        public async Task<Response> Get(Pagination pagination)
         {
             try
             {
-                var productType = await _genericsClass.Get();
+                var productType = await _genericsClass.Get(pagination);
 
                 return new Response()
                 {
@@ -34,7 +34,6 @@ namespace ProductServices.Controllers
             }
             catch (System.Exception ex)
             {
-
                 return new Response()
                 {
                     StatusCode = 200,
@@ -45,11 +44,11 @@ namespace ProductServices.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Response> GetbyId(int id)
+        public async Task<Response> GetbyId([FromQuery] int id, Pagination pagination)
         {
             try
             {
-                var productType = await _genericsClass.Get(x => x.Id == id);
+                var productType = await _genericsClass.Get(x => x.Id == id, pagination);
 
                 return new Response()
                 {

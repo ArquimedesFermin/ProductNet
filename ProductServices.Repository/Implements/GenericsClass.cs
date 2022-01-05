@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProductServices.DTO;
 using ProductServices.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,22 @@ namespace ProductServices.Repository.Implements
     {
         private readonly IUnitOfWork _unitOfWork;
         public GenericsClass(IUnitOfWork unitOfWork) => (_unitOfWork) = (unitOfWork);
-        public async Task<IEnumerable<T>> Get(Expression<Func<T, bool>> expression) => await _unitOfWork.Context.Set<T>().Where(expression).ToListAsync();
-        public async Task<IEnumerable<T>> Get() => await _unitOfWork.Context.Set<T>().ToListAsync();
+        public async Task<IEnumerable<T>> Get(Expression<Func<T, bool>> expression, Pagination pagination)
+        {
+            var result = await _unitOfWork.Context.Set<T>().Where(expression)
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToListAsync();
+            return result;
+        }
+        public async Task<IEnumerable<T>> Get(Pagination pagination)
+        {
+            var result = await _unitOfWork.Context.Set<T>()
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToListAsync();
+            return result;
+        }
         public async Task Add(T entity) => await _unitOfWork.Context.AddAsync(entity);
         public async Task Delete(T entity)
         {

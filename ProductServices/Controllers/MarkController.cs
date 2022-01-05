@@ -19,11 +19,11 @@ namespace ProductServices.Controllers
         public MarkController(IUnitOfWork unitOfWork, IGenericsClass<Marks> genericsClass) => (_unitOfWork, _genericsClass) = (unitOfWork, genericsClass);
 
         [HttpGet]
-        public async Task<Response> Get()
+        public async Task<Response> Get(Pagination pagination)
         {
             try
             {
-                var marks = await _genericsClass.Get();
+                var marks = await _genericsClass.Get(pagination);
 
                 return new Response()
                 {
@@ -45,11 +45,11 @@ namespace ProductServices.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Response> GetbyId(int id)
+        public async Task<Response> GetbyId([FromQuery]int id,Pagination pagination)
         {
             try
             {
-                var mark = await _genericsClass.Get(x => x.Id == id);
+                var mark = await _genericsClass.Get(x => x.Id == id,pagination);
 
                 return new Response()
                 {

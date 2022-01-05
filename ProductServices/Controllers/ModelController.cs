@@ -18,11 +18,11 @@ namespace ProductServices.Controllers
         public ModelController(IUnitOfWork unitOfWork, IGenericsClass<Models.Models> genericsClass) => (_unitOfWork, _genericsClass) = (unitOfWork, genericsClass);
 
         [HttpGet]
-        public async Task<Response> Get()
+        public async Task<Response> Get(Pagination pagination)
         {
             try
             {
-                var models = await _genericsClass.Get();
+                var models = await _genericsClass.Get(pagination);
 
                 return new Response()
                 {
@@ -44,11 +44,11 @@ namespace ProductServices.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Response> GetbyId(int id)
+        public async Task<Response> GetbyId(int id, Pagination pagination)
         {
             try
             {
-                var model = await _genericsClass.Get(x => x.Id == id);
+                var model = await _genericsClass.Get(x => x.Id == id, pagination);
 
                 return new Response()
                 {

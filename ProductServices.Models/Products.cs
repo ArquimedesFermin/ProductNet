@@ -19,9 +19,7 @@ namespace ProductServices.Models
         [ForeignKey("model")]
         public int IdModel { get; set; }
         public string Name { get; set; }
-        public int Stock { get; set; }
         public string Description { get; set; }
-        public DateTime DateManufacture { get; set; }
 
         //Prop Navegation
         public ProductType  productType { get; set; }
