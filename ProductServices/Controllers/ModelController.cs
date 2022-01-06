@@ -14,8 +14,8 @@ namespace ProductServices.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericsClass<Models.Models> _genericsClass;
-
-        public ModelController(IUnitOfWork unitOfWork, IGenericsClass<Models.Models> genericsClass) => (_unitOfWork, _genericsClass) = (unitOfWork, genericsClass);
+        private readonly IModel _model;
+        public ModelController(IUnitOfWork unitOfWork, IGenericsClass<Models.Models> genericsClass, IModel model) => (_unitOfWork, _genericsClass,_model) = (unitOfWork, genericsClass,model);
 
         [HttpGet]
         public async Task<Response> Get(Pagination pagination)
@@ -136,6 +136,32 @@ namespace ProductServices.Controllers
             }
             catch (System.Exception ex)
             {
+                return new Response()
+                {
+                    StatusCode = 500,
+                    IsOk = false,
+                    Result = ex.Message
+                };
+            }
+        }
+
+        [HttpGet("GetModelAll")]
+        public async Task<Response> GetModelAll()
+        {
+            try
+            {
+                var models = await _model.GetModelAll();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = models
+                };
+            }
+            catch (System.Exception ex)
+            {
+
                 return new Response()
                 {
                     StatusCode = 500,

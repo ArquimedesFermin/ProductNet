@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ProductServices.Repository.Interfaces
 {
-    public interface ProductType
+    public interface IModel
     {
-        Task<ProductType> GetAll();
+        Task<List<Models.Models>> GetModelAll();
     }
 }

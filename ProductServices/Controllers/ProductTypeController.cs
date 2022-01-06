@@ -15,8 +15,9 @@ namespace ProductServices.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericsClass<ProductType> _genericsClass;
+        private readonly IProductType _productType;
 
-        public ProductTypeController(IUnitOfWork unitOfWork, IGenericsClass<ProductType> genericsClass) => (_unitOfWork, _genericsClass) = (unitOfWork, genericsClass);
+        public ProductTypeController(IUnitOfWork unitOfWork, IGenericsClass<ProductType> genericsClass, IProductType productType) => (_unitOfWork, _genericsClass, _productType) = (unitOfWork, genericsClass, productType);
 
         [HttpGet]
         public async Task<Response> Get(Pagination pagination)
@@ -144,5 +145,29 @@ namespace ProductServices.Controllers
             }
         }
 
+        [HttpGet("GetProductoTypeAll")]
+        public async Task<Response> GetProductoTypeAll()
+        {
+            try
+            {
+                var productType = await _productType.GetProductTypeAll();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = productType
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = ex.Message
+                };
+            }
+        }
     }
 }

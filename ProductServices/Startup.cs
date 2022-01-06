@@ -45,7 +45,8 @@ namespace ProductServices
             services.AddScoped(typeof(IGenericsClass<>), typeof(GenericsClass<>));
             services.AddTransient<IProducts, Products>();
             services.AddTransient<IColor, Color>();
-
+            services.AddTransient<IProductType, ProductType>();
+            services.AddTransient<IModel, Model>();
 
             services.AddCors(opt => opt.AddPolicy("CorsR", rule =>
             {
