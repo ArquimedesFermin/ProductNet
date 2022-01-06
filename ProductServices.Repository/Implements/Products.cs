@@ -67,19 +67,19 @@ namespace ProductServices.Repository.Implements
             var productType = _UnitOfWork.Context.productTypes.FirstOrDefault(x => x.Name == products.TypeProduct);
             var modelColorPrice = _UnitOfWork.Context.modelColorPrice.FirstOrDefault(x => x.IdModel == model.Id && x.IdColor == color.Id);
 
+          
             product = new Models.Products()
             {
                 IdModel = model.Id,
                 Name = products.Name,
                 Description = products.Description,
                 IdProductType = productType.Id,
-
             };
 
             await _UnitOfWork.Context.AddAsync(product);
             _UnitOfWork.Commit();
             productModelColorPrice.IdProducts = product.Id;
-
+            
             ModelColorPrice = new ModelColorPrice()
             {
                 IdModel = model.Id,
