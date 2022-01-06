@@ -72,9 +72,26 @@ namespace ProductServices.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task Update([FromBody] Products value)
+        public async Task<Response> Update(int id, [FromBody] ProductsDTO value)
         {
-            //  await _productsImplements.Update(value);
+            try
+            {
+                await _productsImplements.Update(id, value);
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 500,
+                    IsOk = false,
+                    Result = ex.Message
+                };
+            }
         }
 
         [HttpDelete]
@@ -89,6 +106,31 @@ namespace ProductServices.Controllers
             try
             {
                 var getResult = await _productsImplements.GetPriceByColor(color, model);
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = getResult
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 500,
+                    IsOk = false,
+                    Result = ex.Message
+                };
+            }
+        }
+
+        [HttpGet("GetUpdate")]
+        public async Task<Response> GetUpdate([FromQuery] int id)
+        {
+            try
+            {
+                var getResult = await _productsImplements.GetUpdate(x => x.Id == id);
 
                 return new Response()
                 {
