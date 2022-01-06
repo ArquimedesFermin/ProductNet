@@ -20,7 +20,7 @@ namespace ProductServices.Controllers
         public MarkController(IUnitOfWork unitOfWork, IGenericsClass<Marks> genericsClass,IMark mark) => (_unitOfWork, _genericsClass,_mark) = (unitOfWork, genericsClass,mark);
 
         [HttpGet]
-        public async Task<Response> Get(Pagination pagination)
+        public async Task<Response> Get([FromQuery]Pagination pagination)
         {
             try
             {

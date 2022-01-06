@@ -45,12 +45,12 @@ namespace ProductServices.Controllers
             }
         }
 
-        [HttpGet("{name}")]
-        public async Task<Response> GetbyId(string name)
+        [HttpGet("{id}")]
+        public async Task<Response> GetbyId(int id)
         {
             try
             {
-                var color = await _genericsClass.Get(x => x.Name == name);
+                var color = await _genericsClass.Get(x => x.Id == id);
 
                 return new Response()
                 {

@@ -20,7 +20,7 @@ namespace ProductServices.Controllers
         public ProductTypeController(IUnitOfWork unitOfWork, IGenericsClass<ProductType> genericsClass, IProductType productType) => (_unitOfWork, _genericsClass, _productType) = (unitOfWork, genericsClass, productType);
 
         [HttpGet]
-        public async Task<Response> Get(Pagination pagination)
+        public async Task<Response> Get([FromQuery] Pagination pagination)
         {
             try
             {
@@ -121,11 +121,12 @@ namespace ProductServices.Controllers
         }
 
         [HttpDelete]
-        public async Task<Response> Delete([FromBody] ProductType productType)
+        public async Task<Response> Delete([FromQuery] int id)
         {
             try
             {
-                await _genericsClass.Delete(productType);
+                var result = _unitOfWork.Context.productTypes.Find(id);
+                await _genericsClass.Delete(result);
                 _unitOfWork.Commit();
 
                 return new Response()

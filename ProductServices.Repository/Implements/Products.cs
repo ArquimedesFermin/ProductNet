@@ -20,7 +20,7 @@ namespace ProductServices.Repository.Implements
         public async Task<List<ProductsDTO>> Get(Pagination pagination)
         {
             return await _UnitOfWork.Context.products
-                .Include(x => x.model).ThenInclude(x => x.Mark).ThenInclude(x => x.ProductType)
+                .Include(x => x.model).ThenInclude(x => x.Mark)
                 .Include(x => x.model.modelColorPrice).ThenInclude(x => x.model)
                 .Include(x => x.model.modelColorPrice).ThenInclude(x => x.color)
                 .Include(x => x.productModelColorPrices)
@@ -39,7 +39,7 @@ namespace ProductServices.Repository.Implements
         public async Task<IEnumerable<ProductsDTO>> Get(Expression<Func<Models.Products, bool>> expression)
         {
             return await _UnitOfWork.Context.products
-                         .Include(x => x.model).ThenInclude(x => x.Mark).ThenInclude(x => x.ProductType)
+                         .Include(x => x.model).ThenInclude(x => x.Mark)
                          .Include(x => x.model.modelColorPrice).ThenInclude(x => x.model)
                          .Include(x => x.model.modelColorPrice).ThenInclude(x => x.color)
                          .Include(x => x.productModelColorPrices)

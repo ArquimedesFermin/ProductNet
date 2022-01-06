@@ -13,8 +13,6 @@ namespace ProductServices.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        [ForeignKey("ProductType")]
-        public int IdProductType { get; set; }
-        public ProductType ProductType { get; set; }
+      
     }
 }
