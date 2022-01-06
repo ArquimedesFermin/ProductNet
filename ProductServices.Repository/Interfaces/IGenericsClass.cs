@@ -11,7 +11,7 @@ namespace ProductServices.Repository.Interfaces
     public interface IGenericsClass<T> where T : class
     {
         Task<IEnumerable<T>> Get(Pagination pagination);
-        Task<IEnumerable<T>> Get(Expression<Func<T, bool>> expression, Pagination pagination);
+        Task<T> Get(Expression<Func<T, bool>> expression);
         Task Add(T entity);
         Task Update(T entity);
         Task Delete(T entity);

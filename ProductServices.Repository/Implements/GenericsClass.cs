@@ -14,12 +14,9 @@ namespace ProductServices.Repository.Implements
     {
         private readonly IUnitOfWork _unitOfWork;
         public GenericsClass(IUnitOfWork unitOfWork) => (_unitOfWork) = (unitOfWork);
-        public async Task<IEnumerable<T>> Get(Expression<Func<T, bool>> expression, Pagination pagination)
+        public async Task<T> Get(Expression<Func<T, bool>> expression)
         {
-            var result = await _unitOfWork.Context.Set<T>().Where(expression)
-                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
-                .Take(pagination.PageSize)
-                .ToListAsync();
+            var result = await _unitOfWork.Context.Set<T>().Where(expression).FirstOrDefaultAsync();
             return result;
         }
         public async Task<IEnumerable<T>> Get(Pagination pagination)

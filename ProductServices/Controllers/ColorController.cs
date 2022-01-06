@@ -46,11 +46,11 @@ namespace ProductServices.Controllers
         }
 
         [HttpGet("{name}")]
-        public async Task<Response> GetbyId(string name, [FromQuery] Pagination pagination)
+        public async Task<Response> GetbyId(string name)
         {
             try
             {
-                var color = await _genericsClass.Get(x => x.Name == name, pagination);
+                var color = await _genericsClass.Get(x => x.Name == name);
 
                 return new Response()
                 {

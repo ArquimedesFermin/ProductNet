@@ -45,11 +45,11 @@ namespace ProductServices.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Response> GetbyId([FromQuery] int id, Pagination pagination)
+        public async Task<Response> GetbyId([FromQuery] int id)
         {
             try
             {
-                var productType = await _genericsClass.Get(x => x.Id == id, pagination);
+                var productType = await _genericsClass.Get(x => x.Id == id);
 
                 return new Response()
                 {

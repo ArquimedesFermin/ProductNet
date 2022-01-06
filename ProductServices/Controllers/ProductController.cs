@@ -94,10 +94,27 @@ namespace ProductServices.Controllers
             }
         }
 
-        [HttpDelete]
-        public async Task Delete(Products products)
+        [HttpDelete("{id}")]
+        public async Task<Response> Delete(int id)
         {
-            await _productsImplements.Delete(products);
+            try
+            {
+                await _productsImplements.Delete(id);
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 500,
+                    IsOk = false,
+                    Result = ex.Message
+                };
+            }
         }
 
         [HttpGet("GetDetailPriceByColor")]

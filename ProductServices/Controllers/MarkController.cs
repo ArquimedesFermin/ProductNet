@@ -15,8 +15,9 @@ namespace ProductServices.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericsClass<Marks> _genericsClass;
+        private readonly IMark _mark;
 
-        public MarkController(IUnitOfWork unitOfWork, IGenericsClass<Marks> genericsClass) => (_unitOfWork, _genericsClass) = (unitOfWork, genericsClass);
+        public MarkController(IUnitOfWork unitOfWork, IGenericsClass<Marks> genericsClass,IMark mark) => (_unitOfWork, _genericsClass,_mark) = (unitOfWork, genericsClass,mark);
 
         [HttpGet]
         public async Task<Response> Get(Pagination pagination)
@@ -45,11 +46,11 @@ namespace ProductServices.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Response> GetbyId([FromQuery]int id,Pagination pagination)
+        public async Task<Response> GetbyId([FromQuery]int id)
         {
             try
             {
-                var mark = await _genericsClass.Get(x => x.Id == id,pagination);
+                var mark = await _genericsClass.Get(x => x.Id == id);
 
                 return new Response()
                 {
@@ -133,6 +134,32 @@ namespace ProductServices.Controllers
                 {
                     StatusCode = 200,
                     IsOk = true,
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 500,
+                    IsOk = false,
+                    Result = ex.Message
+                };
+            }
+        }
+
+        [HttpGet("GetAllMark")]
+        public async Task<Response> GetAll()
+        {
+            try
+            { 
+               var result = await _mark.GetAll();
+                _unitOfWork.Commit();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result= result
                 };
             }
             catch (System.Exception ex)

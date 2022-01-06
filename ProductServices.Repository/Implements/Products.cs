@@ -103,9 +103,10 @@ namespace ProductServices.Repository.Implements
             _UnitOfWork.Context.productModelColorPrice.Add(productModelColorPrice);
             _UnitOfWork.Commit();
         }
-        public async Task Delete(Models.Products product)
+        public async Task Delete(int id)
         {
-            _UnitOfWork.Context.Remove(product);
+            var result = await _UnitOfWork.Context.products.Where(x => x.Id == id).FirstOrDefaultAsync();
+            _UnitOfWork.Context.Remove(result);
             _UnitOfWork.Commit();
             await Task.CompletedTask;
         }
@@ -183,10 +184,10 @@ namespace ProductServices.Repository.Implements
         {
             var result = await _UnitOfWork.Context.products
                         .Include(x => x.model)
-                        .Include(x=>x.productType)
+                        .Include(x => x.productType)
                         .Include(x => x.model.modelColorPrice).ThenInclude(x => x.model)
                         .Include(x => x.model.modelColorPrice).ThenInclude(x => x.color)
-                        .Include(x => x.productModelColorPrices).ThenInclude(x=>x.ModelColorPrice)
+                        .Include(x => x.productModelColorPrices).ThenInclude(x => x.ModelColorPrice)
                         .Where(expression)
                         .Select(x => new ProductsDTO()
                         {

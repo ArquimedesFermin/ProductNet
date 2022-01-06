@@ -18,7 +18,7 @@ namespace ProductServices.Controllers
         public ModelController(IUnitOfWork unitOfWork, IGenericsClass<Models.Models> genericsClass, IModel model) => (_unitOfWork, _genericsClass,_model) = (unitOfWork, genericsClass,model);
 
         [HttpGet]
-        public async Task<Response> Get(Pagination pagination)
+        public async Task<Response> Get([FromQuery]Pagination pagination)
         {
             try
             {
@@ -44,11 +44,11 @@ namespace ProductServices.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Response> GetbyId(int id, Pagination pagination)
+        public async Task<Response> GetbyId(int id)
         {
             try
             {
-                var model = await _genericsClass.Get(x => x.Id == id, pagination);
+                var model = await _genericsClass.Get(x => x.Id == id);
 
                 return new Response()
                 {
@@ -151,6 +151,32 @@ namespace ProductServices.Controllers
             try
             {
                 var models = await _model.GetModelAll();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = models
+                };
+            }
+            catch (System.Exception ex)
+            {
+
+                return new Response()
+                {
+                    StatusCode = 500,
+                    IsOk = false,
+                    Result = ex.Message
+                };
+            }
+        }
+
+        [HttpGet("GetModelGrid")]
+        public async Task<Response> GetModelGrid([FromQuery]Pagination pagination)
+        {
+            try
+            {
+                var models = await _model.GetModelGrid(pagination);
 
                 return new Response()
                 {

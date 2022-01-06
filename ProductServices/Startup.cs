@@ -47,6 +47,8 @@ namespace ProductServices
             services.AddTransient<IColor, Color>();
             services.AddTransient<IProductType, ProductType>();
             services.AddTransient<IModel, Model>();
+            services.AddTransient<IMark, Mark>();
+
 
             services.AddCors(opt => opt.AddPolicy("CorsR", rule =>
             {
