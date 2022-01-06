@@ -44,6 +44,8 @@ namespace ProductServices
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericsClass<>), typeof(GenericsClass<>));
             services.AddTransient<IProducts, Products>();
+            services.AddTransient<IColor, Color>();
+
 
             services.AddCors(opt => opt.AddPolicy("CorsR", rule =>
             {

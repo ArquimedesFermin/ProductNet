@@ -37,7 +37,6 @@ namespace ProductServices.Repository.Implements
                     Price = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.Price,
                 }).ToListAsync();
         }
-
         public async Task<IEnumerable<ProductsDTO>> Get(Expression<Func<Models.Products, bool>> expression)
         {
             return await _UnitOfWork.Context.products
@@ -57,7 +56,6 @@ namespace ProductServices.Repository.Implements
                              Price = x.productModelColorPrices.Where(x => x.IdProducts == x.IdProducts).First().ModelColorPrice.Price,
                          }).ToListAsync();
         }
-
         public async Task Add(ProductsDTO products)
         {
             var productModelColorPrice = new ProductModelColorPrice();
@@ -107,7 +105,6 @@ namespace ProductServices.Repository.Implements
             _UnitOfWork.Context.productModelColorPrice.Add(productModelColorPrice);
             _UnitOfWork.Commit();
         }
-
         public async Task Delete(Models.Products product)
         {
             _UnitOfWork.Context.Remove(product);
@@ -120,10 +117,23 @@ namespace ProductServices.Repository.Implements
             _UnitOfWork.Commit();
             await Task.CompletedTask;
         }
-
-        public Task<DetailsPriceDTO> GetPriceByColor(string color)
+        public async Task<DetailsPriceDTO> GetPriceByColor(string color, string model)
         {
-            throw new NotImplementedException();
+            var colorObj = _UnitOfWork.Context.colors.Where(x => x.Name == color).FirstOrDefault();
+            var modelObj = _UnitOfWork.Context.models.Where(x => x.Name == model).FirstOrDefault();
+
+            var DatailPrice = await _UnitOfWork.Context.modelColorPrice
+                 .Include(x => x.color)
+                 .Where(a => a.IdColor == colorObj.Id && a.IdModel == modelObj.Id)
+                 .Select(x => new DetailsPriceDTO()
+                 {
+                     Price = x.Price,
+                     Stock = x.Stock,
+                     Color = x.color.Name,
+                     ColorHex = x.color.HexColor
+                 }).FirstOrDefaultAsync();
+
+            return DatailPrice;
         }
     }
 }

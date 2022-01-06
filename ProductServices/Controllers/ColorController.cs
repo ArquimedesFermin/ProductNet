@@ -15,8 +15,9 @@ namespace ProductServices.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericsClass<Color> _genericsClass;
+        private readonly IColor _Color;
 
-        public ColorController(IUnitOfWork unitOfWork, IGenericsClass<Color> genericsClass) => (_unitOfWork, _genericsClass) = (unitOfWork, genericsClass);
+        public ColorController(IUnitOfWork unitOfWork, IGenericsClass<Color> genericsClass, IColor color) => (_unitOfWork, _genericsClass, _Color) = (unitOfWork, genericsClass, color);
 
         [HttpGet]
         public async Task<Response> Get([FromQuery] Pagination pagination)
@@ -45,7 +46,7 @@ namespace ProductServices.Controllers
         }
 
         [HttpGet("{name}")]
-        public async Task<Response> GetbyId(string name,[FromQuery] Pagination pagination)
+        public async Task<Response> GetbyId(string name, [FromQuery] Pagination pagination)
         {
             try
             {
@@ -145,5 +146,33 @@ namespace ProductServices.Controllers
                 };
             }
         }
+
+        [HttpGet("GetColorAll")]
+        public async Task<Response> GetColor()
+        {
+            try
+            {
+                var colors = await _Color.GetColor();
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = colors
+                };
+            }
+            catch (System.Exception ex)
+            {
+
+                return new Response()
+                {
+                    StatusCode = 500,
+                    IsOk = false,
+                    Result = ex.Message
+                };
+            }
+        }
+
+
     }
 }

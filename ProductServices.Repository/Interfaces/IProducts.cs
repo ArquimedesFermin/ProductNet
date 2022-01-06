@@ -14,7 +14,7 @@ namespace ProductServices.Repository.Interfaces
     {
         Task<List<ProductsDTO>> Get(Pagination pagination);
         Task<IEnumerable<ProductsDTO>> Get(Expression<Func<Models.Products, bool>> expression);
-        Task<DetailsPriceDTO> GetPriceByColor(string color);
+        Task<DetailsPriceDTO> GetPriceByColor(string color, string model);
         Task Add(ProductsDTO product);
         Task Update(ProductsDTO product);
         Task Delete(Products product);

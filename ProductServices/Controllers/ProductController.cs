@@ -17,7 +17,7 @@ namespace ProductServices.Controllers
         public ProductController(IProducts productsImplements) => _productsImplements = productsImplements;
 
         [HttpGet]
-        public async Task<Response> Get([FromQuery]Pagination pagination)
+        public async Task<Response> Get([FromQuery] Pagination pagination)
         {
             try
             {
@@ -82,5 +82,31 @@ namespace ProductServices.Controllers
         {
             await _productsImplements.Delete(products);
         }
+
+        [HttpGet("GetDetailPriceByColor")]
+        public async Task<Response> GetDetailPriceByColor([FromQuery] string color, string model)
+        {
+            try
+            {
+                var getResult = await _productsImplements.GetPriceByColor(color, model);
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = getResult
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 500,
+                    IsOk = false,
+                    Result = ex.Message
+                };
+            }
+        }
+
     }
 }
