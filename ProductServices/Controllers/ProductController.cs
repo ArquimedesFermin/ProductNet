@@ -41,11 +41,29 @@ namespace ProductServices.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IEnumerable<Products>> Get(int id)
+        [HttpGet("{name}")]
+        public async Task<Response> GetProductByName(string name)
         {
-            return new List<Products>();
-            //  return await _productsImplements.Get(x => x.Id == id);
+            try
+            {
+                var result = await _productsImplements.Get(x => x.Name.Contains(name));
+
+                return new Response()
+                {
+                    StatusCode = 200,
+                    IsOk = true,
+                    Result = result
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new Response()
+                {
+                    StatusCode = 500,
+                    IsOk = false,
+                    Result = ex.Message
+                };
+            }
         }
 
         [HttpPost]

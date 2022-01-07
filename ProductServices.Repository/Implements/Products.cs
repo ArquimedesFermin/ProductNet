@@ -119,7 +119,8 @@ namespace ProductServices.Repository.Implements
             var color = _UnitOfWork.Context.colors.FirstOrDefault(x => x.Name == products.Color);
             var model = _UnitOfWork.Context.models.FirstOrDefault(x => x.Name == products.Model);
             var productType = _UnitOfWork.Context.productTypes.FirstOrDefault(x => x.Name == products.TypeProduct);
-            var modelColorPrice = _UnitOfWork.Context.modelColorPrice.FirstOrDefault(x => x.IdModel == model.Id && x.IdColor == color.Id);
+            var ProductModelColorPrice = _UnitOfWork.Context.productModelColorPrice.Where(x => x.IdProducts == Id).FirstOrDefault().IdModelColorPrice;
+            var modelColorPrice = _UnitOfWork.Context.modelColorPrice.FirstOrDefault(x=>x.Id == ProductModelColorPrice);
             product = _UnitOfWork.Context.products.Where(x => x.Id == Id).FirstOrDefault();
 
             //Actualizar producto
@@ -142,25 +143,15 @@ namespace ProductServices.Repository.Implements
                 Stock = (modelColorPrice is null) ? products.Stock : modelColorPrice.Stock + products.Stock,
             };
 
-            if (modelColorPrice is null)
-            {
-                _UnitOfWork.Context.modelColorPrice.Add(ModelColorPrice);
-                _UnitOfWork.Commit();
 
-                productModelColorPrice.IdModelColorPrice = ModelColorPrice.Id == 0 ? modelColorPrice.Id : ModelColorPrice.Id;
-                _UnitOfWork.Context.productModelColorPrice.Add(productModelColorPrice);
-                _UnitOfWork.Commit();
-            }
-            else
-            {
-                modelColorPrice.IdModel = model.Id;
-                modelColorPrice.IdColor = color.Id;
-                modelColorPrice.Price = products.Price;
-                modelColorPrice.Stock = products.Stock;
+            modelColorPrice.IdModel = model.Id;
+            modelColorPrice.IdColor = color.Id;
+            modelColorPrice.Price = products.Price;
+            modelColorPrice.Stock = products.Stock;
 
-                _UnitOfWork.Context.Entry(modelColorPrice).State = EntityState.Modified;
-                _UnitOfWork.Commit();
-            }
+            _UnitOfWork.Context.Entry(modelColorPrice).State = EntityState.Modified;
+            _UnitOfWork.Commit();
+
         }
         public async Task<DetailsPriceDTO> GetPriceByColor(string color, string model)
         {
@@ -203,6 +194,6 @@ namespace ProductServices.Repository.Implements
 
 
             return result;
-        }
+        }  
     }
 }
